@@ -1,0 +1,61 @@
+### Get list of users
+GET http://localhost:3000/user 
+
+### Sign in
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "name": "Freecodecamp",
+    "password": "bHQbgBdbc&V9-Cy-ukt9"
+}
+
+###
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "name": "caohungthinh",
+    "password": "mLr#Lswb7XA26&#zy7&Z"
+}
+
+### 
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "name": "Author: Kyle",
+    "password": "CCf6vVGqx$r6zUJ_wFvu"
+}
+
+### Login in
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "name": "caohungthinh",
+    "password": "mLr#Lswb7XA26&#zy7&Z"
+}
+
+###
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "name": "caohungthinh",
+    "password": "fakePassword"   
+}
+
+### 
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "name": "Freecodecamp",
+    "password": "bHQbgBdbc&V9-Cy-ukt9"
+}
+
+
+
+
+
