@@ -15,28 +15,41 @@ app.get('/user', (req, res) => {
     res.json(users).send();
 });
 
-app.post('/user', (req, res) => {
+app.post('/user', async (req, res) => {
     const { name, password } = validate(req.body);
 
     const user = findOneUser(users, name);
     if (user !== undefined) {
-        return res.send('User signed in');
+        return res.status(200).send('User signed in');
     }
 
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-        // Store hash in your password DB
+    try {
+        const passwordHash = await bcrypt.hash(password, saltRounds);
         const newUser = {
             name: name,
-            passwordHash: hash,
-        }
+            passwordHash: passwordHash,
+        };
         users.push(newUser);
-    });
+        res.json(newUser);
+        res.status(201).send();
+    } catch (error) {
+        res.status(500).send();
+    }
 
-    res.json({
-        name: name,
-        password: password,
-    });
-    res.status(201).send();
+    // bcrypt.hash(password, saltRounds, function(err, hash) {
+    //     // Store hash in your password DB
+    //     const newUser = {
+    //         name: name,
+    //         passwordHash: hash,
+    //     }
+    //     users.push(newUser);
+    // });
+
+    // res.json({
+    //     name: name,
+    //     password: password,
+    // });
+    // res.status(201).send();
 });
 
 app.post('/user/login', async (req, res) => {
@@ -47,13 +60,26 @@ app.post('/user/login', async (req, res) => {
         return res.send('Cannot find user');
     }
 
-    bcrypt.compare(password, user.passwordHash).then(result => {
-        if (result === true) {
-            return res.send('Success Log In');
+    try {
+        const match = await bcrypt.compare(password, user.passwordHash);
+        if (match) {
+            return res.status(200).send('Success Log In');
         } else {
-            res.send('Not Allowed');
+            return res.status(401).send('Not Allowed');
         }
-    });
+    } catch (error) {
+        return res.status(500).send();
+    }
+
+    // bcrypt.compare(password, user.passwordHash).then(result => {
+    //     if (result === true) {
+    //         return res.send('Success Log In');
+    //     } else {
+    //         res.send('Not Allowed');
+    //     }
+    // }).catch(err => {
+    //     res.status(500).send();
+    // });
 });
 
 const PORT = process.env.PORT || 8080;
